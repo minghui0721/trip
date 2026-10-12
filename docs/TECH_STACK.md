@@ -1,4 +1,4 @@
-# Trip — Tech Stack Decisions
+# Jalan Jalan — Tech Stack Decisions
 
 > Last updated: 2026-09-24
 
@@ -75,7 +75,7 @@ profiles ──< trip_members >── trips
 
 | Stage | What to do |
 |---|---|
-| V0 | Add `manifest.json` → can be added to the home screen and opens full screen |
+| V0 ✅ | `src/app/manifest.ts` + icons in `public/icons/` → can be added to the home screen and opens full screen |
 | V0–V5 | Build as a normal website, following the habits below |
 | V6 | Add a Service Worker → offline viewing and push notifications |
 
@@ -97,6 +97,7 @@ profiles ──< trip_members >── trips
 - [x] Sign-in method: **Google** (one tap to sign up / sign in)
   - Needs a Google Cloud OAuth client (Client ID + Secret) configured in Supabase
   - Detect in-app browsers (WhatsApp, Messenger, Instagram) and ask users to open the link in Chrome / Safari, because Google blocks sign-in there
+  - ⚠️ TODO before inviting friends: the Google Cloud OAuth project may be set up under a work account at first. Move it to a personal / dedicated Gmail (new project + OAuth client, then swap Client ID & Secret in Supabase). Existing users are unaffected.
   - Email + password can be added later as a fallback
   - One "Continue with Google" button (sign-up and sign-in are the same flow)
   - V0 uses the Google name as the display name; editing it comes later on a profile page

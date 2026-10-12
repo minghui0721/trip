@@ -1,0 +1,72 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>Trip — logo concepts</title>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@800;900&display=swap" rel="stylesheet">
+<style>
+  body { margin: 0; padding: 40px 24px; background: #121212; color: #fff; font-family: Geist, system-ui, sans-serif; }
+  h1 { font-weight: 900; letter-spacing: -0.04em; margin: 0 0 32px; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; max-width: 1200px; }
+  .card { background: #181818; border-radius: 16px; padding: 24px; }
+  .label { font-weight: 800; font-size: 20px; }
+  .idea { color: #b3b3b3; font-size: 14px; margin: 4px 0 20px; min-height: 40px; }
+  .sizes { display: flex; align-items: end; gap: 16px; margin-bottom: 24px; }
+  .sizes svg { display: block; }
+  .word { display: flex; align-items: center; gap: 10px; font-weight: 900; font-size: 32px; letter-spacing: -0.05em; }
+  .light { background: #f4f4f4; color: #121212; border-radius: 12px; padding: 12px 16px; margin-top: 12px; }
+</style>
+
+<h1>Trip — logo concepts</h1>
+<div class="grid" id="grid"></div>
+
+<script>
+const mint = "#2EE6A6", bg = "#121212";
+const concepts = [
+  {
+    label: "A · Paper plane",
+    idea: "A paper plane with a dotted flight path. Classic, instantly reads as travel.",
+    svg: `<rect width="100" height="100" rx="24" fill="${bg}"/>
+      <path d="M16 70 Q 30 86 46 74" fill="none" stroke="${mint}" stroke-width="5" stroke-linecap="round" stroke-dasharray="1 9" opacity=".7"/>
+      <path d="M20 50 L84 20 L64 80 L50 58 Z" fill="${mint}"/>
+      <path d="M50 58 L84 20" stroke="${bg}" stroke-width="4" stroke-linecap="round"/>`,
+  },
+  {
+    label: "B · Group pin",
+    idea: "A map pin with three friends inside. Says ‘a place’ + ‘a group’.",
+    svg: `<rect width="100" height="100" rx="24" fill="${bg}"/>
+      <g transform="translate(50 50) scale(.8) translate(-50 -50)"><path d="M50 88 C 50 88 20 60 20 40 A 30 30 0 0 1 80 40 C 80 60 50 88 50 88 Z" fill="${mint}"/>
+      <circle cx="40" cy="44" r="7" fill="${bg}"/>
+      <circle cx="60" cy="44" r="7" fill="${bg}"/>
+      <circle cx="50" cy="28" r="7" fill="${bg}"/></g>`,
+  },
+  {
+    label: "C · Route T",
+    idea: "The letter T drawn as a route between stops. Simple monogram, works tiny.",
+    svg: `<rect width="100" height="100" rx="24" fill="${bg}"/>
+      <path d="M24 30 H76 M50 30 V74" stroke="${mint}" stroke-width="12" stroke-linecap="round"/>
+      <circle cx="24" cy="30" r="10" fill="${bg}" stroke="${mint}" stroke-width="6"/>
+      <circle cx="76" cy="30" r="10" fill="${bg}" stroke="${mint}" stroke-width="6"/>
+      <circle cx="50" cy="76" r="12" fill="${mint}"/>`,
+  },
+  {
+    label: "D · Together",
+    idea: "Three overlapping circles, one per friend, blending where they meet. Matches the purple/coral glow.",
+    svg: `<rect width="100" height="100" rx="24" fill="${bg}"/>
+      <circle cx="50" cy="38" r="20" fill="${mint}" style="mix-blend-mode:screen"/>
+      <circle cx="38" cy="60" r="20" fill="#A56BFF" style="mix-blend-mode:screen"/>
+      <circle cx="62" cy="60" r="20" fill="#FF6B5A" style="mix-blend-mode:screen"/>`,
+  },
+];
+
+const grid = document.getElementById("grid");
+for (const c of concepts) {
+  const icon = (size) => `<svg width="${size}" height="${size}" viewBox="0 0 100 100" style="isolation:isolate">${c.svg}</svg>`;
+  grid.insertAdjacentHTML("beforeend", `
+    <div class="card">
+      <div class="label">${c.label}</div>
+      <div class="idea">${c.idea}</div>
+      <div class="sizes">${icon(128)}${icon(64)}${icon(32)}${icon(16)}</div>
+      <div class="word">${icon(40)}Trip</div>
+      <div class="word light">${icon(40)}Trip</div>
+    </div>`);
+}
+</script>
