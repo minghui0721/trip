@@ -16,8 +16,8 @@ export default async function LoginPage({ searchParams }: PageProps<"/login">) {
   if (user) redirect(next);
 
   return (
-    <div className="flex flex-1 flex-col bg-gradient-to-b from-secondary to-background to-60%">
-      <main className="mx-auto flex w-full max-w-sm flex-1 flex-col justify-center gap-10 px-6 py-12">
+    <div className="flex min-h-lvh flex-1 flex-col bg-gradient-to-b from-secondary to-background to-60%">
+      <main className="mx-auto flex w-full max-w-sm flex-1 flex-col justify-center gap-10 px-6 pt-[max(3rem,env(safe-area-inset-top))] pb-[max(3rem,env(safe-area-inset-bottom))]">
         <div className="text-center">
           <LogoIcon className="mx-auto size-20 rounded-3xl ring-1 ring-white/10" />
           <h1 className="mt-4 text-4xl font-black tracking-tighter">Sign in to <span className="whitespace-nowrap">Jalan Jalan</span></h1>

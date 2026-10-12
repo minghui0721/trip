@@ -17,7 +17,7 @@ export function Landing() {
 
       <main className="relative mx-auto flex w-full max-w-3xl flex-1 flex-col px-6">
         {/* Hero fills the first screen */}
-        <section className="flex min-h-svh flex-col items-center justify-center gap-8 py-16 text-center">
+        <section className="flex min-h-lvh flex-col items-center justify-center gap-8 px-0 pt-[max(4rem,env(safe-area-inset-top))] pb-[max(4rem,env(safe-area-inset-bottom))] text-center">
           <Logo className="text-2xl" />
           <h1 className="text-5xl leading-[0.9] font-black tracking-tighter sm:text-8xl">
             Plan your trip
