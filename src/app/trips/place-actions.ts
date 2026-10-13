@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { isPlaceCategory, isPlaceStatus, placePhotosBucket } from "@/lib/place";
+import { currentUser } from "@/lib/auth";
 import { createClient } from "@/lib/supabase/server";
 
 export type PlaceFormState = { error?: string; placeId?: string };
@@ -68,9 +69,7 @@ export async function createPlace(
   if ("error" in place) return place;
 
   const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const user = await currentUser(supabase);
   if (!user) redirect(`/login?next=${encodeURIComponent(`/trips/${place.tripId}/places/new`)}`);
 
   const { data, error } = await supabase
@@ -104,9 +103,7 @@ export async function updatePlace(
   if ("error" in place) return place;
 
   const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const user = await currentUser(supabase);
   if (!user) {
     redirect(`/login?next=${encodeURIComponent(`/trips/${place.tripId}/places/${placeId}/edit`)}`);
   }
@@ -141,9 +138,7 @@ export async function setPlaceStatus(formData: FormData) {
   if (!isUuid(tripId) || !isUuid(placeId) || !isPlaceStatus(status)) return;
 
   const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const user = await currentUser(supabase);
   if (!user) redirect(`/login?next=${encodeURIComponent(`/trips/${tripId}/places`)}`);
 
   await supabase.from("places").update({ status }).eq("id", placeId).eq("trip_id", tripId);
@@ -156,9 +151,7 @@ export async function deletePlace(formData: FormData) {
   if (!isUuid(tripId) || !isUuid(placeId)) return;
 
   const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const user = await currentUser(supabase);
   if (!user) redirect(`/login?next=${encodeURIComponent(`/trips/${tripId}/places`)}`);
 
   const { data: photos } = await supabase.from("place_photos").select("path").eq("place_id", placeId);
@@ -177,9 +170,7 @@ export async function deletePlacePhoto(formData: FormData) {
   if (!isUuid(tripId) || !isUuid(placeId) || !isUuid(photoId)) return;
 
   const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const user = await currentUser(supabase);
   if (!user) redirect(`/login?next=${encodeURIComponent(`/trips/${tripId}/places`)}`);
 
   const { data: place } = await supabase

@@ -4,6 +4,7 @@ import { GoogleSignIn } from "@/components/google-sign-in";
 import { buttonVariants } from "@/components/ui/button";
 import { formatDateRange } from "@/lib/format";
 import { normalizeInviteCode } from "@/lib/invite";
+import { currentUser } from "@/lib/auth";
 import { createClient } from "@/lib/supabase/server";
 import { tripColor } from "@/lib/trip-color";
 import { cn } from "@/lib/utils";
@@ -37,9 +38,7 @@ export default async function JoinPage({ params }: PageProps<"/join/[code]">) {
   const trip = trips?.[0];
   if (!trip) return <InviteMessage title="This invite link isn't valid." />;
 
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const user = await currentUser(supabase);
   if (user) {
     // Members can read the trip; everyone else gets nothing back.
     const { data: existing } = await supabase

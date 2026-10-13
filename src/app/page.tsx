@@ -3,6 +3,7 @@ import { ArrowLeftRight, ChevronRight, Plus } from "lucide-react";
 import { Logo } from "@/components/logo";
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { currentUser } from "@/lib/auth";
 import { createClient } from "@/lib/supabase/server";
 import { HomeTrips, type HomeTrip } from "./home-trips";
 import { Landing } from "./landing";
@@ -10,9 +11,7 @@ import { UserMenu } from "./user-menu";
 
 export default async function Home() {
   const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const user = await currentUser(supabase);
   if (!user) return <Landing />;
 
   const [{ data: profile }, { data: trips }] = await Promise.all([

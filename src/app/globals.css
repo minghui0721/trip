@@ -138,14 +138,23 @@
   * {
     @apply border-border outline-ring/50;
   }
-  /* Phone browsers give date and time inputs a minimum width that spills
-     out of a half-width column and overlaps the field beside them. */
+  /* Safari gives a date input a minimum width that ignores the column,
+     so two dates overlap and the row is wider than the fields above. */
   input[type="date"],
   input[type="time"] {
     display: block;
+    box-sizing: border-box;
+    width: 100%;
     max-width: 100%;
     min-width: 0;
     min-inline-size: 0;
+    -webkit-appearance: none;
+    appearance: none;
+  }
+  input[type="date"]::-webkit-date-and-time-value,
+  input[type="time"]::-webkit-date-and-time-value {
+    min-width: 0;
+    text-align: left;
   }
   html {
     @apply bg-background font-sans;

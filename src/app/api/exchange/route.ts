@@ -1,13 +1,12 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { centsFromInput, convertCents, isExpenseCurrency } from "@/lib/expense";
+import { currentUser } from "@/lib/auth";
 import { createClient } from "@/lib/supabase/server";
 
 // Today's published rates. Lookup only: nothing here is saved onto an expense.
 export async function GET(request: NextRequest) {
   const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const user = await currentUser(supabase);
   if (!user) return NextResponse.json({ error: "Sign in required." }, { status: 401 });
 
   const from = request.nextUrl.searchParams.get("from") ?? "";

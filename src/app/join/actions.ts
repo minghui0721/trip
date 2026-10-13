@@ -1,6 +1,7 @@
 "use server";
 
 import { redirect } from "next/navigation";
+import { currentUser } from "@/lib/auth";
 import { createClient } from "@/lib/supabase/server";
 import { normalizeInviteCode } from "@/lib/invite";
 
@@ -14,9 +15,7 @@ export async function joinTrip(
   if (!code) return { error: "This invite link isn't valid." };
 
   const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const user = await currentUser(supabase);
   if (!user) redirect(`/login?next=${encodeURIComponent(`/join/${code}`)}`);
 
   const { data: tripId, error } = await supabase.rpc("join_trip", { p_code: code });

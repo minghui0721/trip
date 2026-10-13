@@ -9,6 +9,7 @@ import {
   isExpenseCurrency,
 } from "@/lib/expense";
 import { isIsoDate } from "@/lib/itinerary";
+import { currentUser } from "@/lib/auth";
 import { createClient } from "@/lib/supabase/server";
 
 export type ExpenseFormState = { error?: string };
@@ -111,9 +112,7 @@ export async function createExpense(
   if ("error" in expense) return expense;
 
   const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const user = await currentUser(supabase);
   if (!user) redirect(`/login?next=${encodeURIComponent(`/trips/${expense.tripId}/expenses/new`)}`);
 
   const members = await memberIds(supabase, expense.tripId);
@@ -171,9 +170,7 @@ export async function updateExpense(
   if ("error" in expense) return expense;
 
   const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const user = await currentUser(supabase);
   if (!user) {
     redirect(`/login?next=${encodeURIComponent(`/trips/${expense.tripId}/expenses/${expenseId}/edit`)}`);
   }
@@ -260,9 +257,7 @@ export async function deleteExpense(formData: FormData) {
   if (!isUuid(tripId) || !isUuid(expenseId)) return;
 
   const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const user = await currentUser(supabase);
   if (!user) redirect(`/login?next=${encodeURIComponent(`/trips/${tripId}/expenses`)}`);
 
   await supabase.from("expenses").delete().eq("id", expenseId).eq("trip_id", tripId);

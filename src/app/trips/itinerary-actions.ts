@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { isIsoDate, isTime } from "@/lib/itinerary";
+import { currentUser } from "@/lib/auth";
 import { createClient } from "@/lib/supabase/server";
 
 export type ItineraryFormState = { error?: string };
@@ -69,9 +70,7 @@ export async function createItineraryItem(
   if ("error" in item) return item;
 
   const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const user = await currentUser(supabase);
   if (!user) redirect(`/login?next=${encodeURIComponent(`/trips/${item.tripId}/itinerary/new`)}`);
 
   if (!(await placeOnTrip(supabase, item.tripId, item.placeId))) {
@@ -102,9 +101,7 @@ export async function updateItineraryItem(
   if ("error" in item) return item;
 
   const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const user = await currentUser(supabase);
   if (!user) {
     redirect(`/login?next=${encodeURIComponent(`/trips/${item.tripId}/itinerary/${itemId}/edit`)}`);
   }
@@ -140,9 +137,7 @@ export async function deleteItineraryItem(formData: FormData) {
   if (!isUuid(tripId) || !isUuid(itemId)) return;
 
   const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const user = await currentUser(supabase);
   if (!user) redirect(`/login?next=${encodeURIComponent(`/trips/${tripId}`)}`);
 
   await supabase.from("itinerary_items").delete().eq("id", itemId).eq("trip_id", tripId);

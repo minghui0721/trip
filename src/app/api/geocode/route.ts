@@ -1,13 +1,12 @@
 import { NextResponse, type NextRequest } from "next/server";
+import { currentUser } from "@/lib/auth";
 import { createClient } from "@/lib/supabase/server";
 
 // OpenStreetMap search. The browser cannot set a User-Agent, which Nominatim requires,
 // so signed-in requests are proxied from here.
 export async function GET(request: NextRequest) {
   const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const user = await currentUser(supabase);
   if (!user) return NextResponse.json({ error: "Sign in required." }, { status: 401 });
 
   const query = request.nextUrl.searchParams.get("q")?.trim() ?? "";
