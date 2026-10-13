@@ -18,7 +18,15 @@ const PlacePicker = dynamic(
   { ssr: false, loading: () => <div className="h-64 rounded-xl bg-card" /> },
 );
 
-export function AddPlaceForm({ tripId, destination }: { tripId: string; destination: string | null }) {
+export function AddPlaceForm({
+  tripId,
+  destination,
+  onDone,
+}: {
+  tripId: string;
+  destination: string | null;
+  onDone?: () => void;
+}) {
   const router = useRouter();
   const inputRef = useRef<HTMLInputElement>(null);
   const [files, setFiles] = useState<File[]>([]);
@@ -66,8 +74,14 @@ export function AddPlaceForm({ tripId, destination }: { tripId: string; destinat
         setSaved(true);
         setPhase("idle");
         setError("The place was added, but the photos didn't upload. You can add them from the trip page.");
+        router.refresh();
         return;
       }
+    }
+    if (onDone) {
+      onDone();
+      router.refresh();
+      return;
     }
     router.push(`/trips/${tripId}/places`);
   }

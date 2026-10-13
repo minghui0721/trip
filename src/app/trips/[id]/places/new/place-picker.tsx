@@ -78,7 +78,8 @@ export function PlacePicker({
         const found = await searchPlaces(destination);
         if (!cancelled && found[0] && map) map.setView([found[0].latitude, found[0].longitude], 11);
       }
-      map.invalidateSize();
+      // The search can outlive this map. A removed map throws on invalidateSize.
+      if (!cancelled && map && element.isConnected) map.invalidateSize();
     }
 
     void start();
@@ -86,6 +87,8 @@ export function PlacePicker({
       cancelled = true;
       chooseRef.current = () => {};
       map?.remove();
+      map = null;
+      marker = null;
     };
   }, [destination]);
 

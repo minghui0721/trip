@@ -19,14 +19,23 @@ export async function TripBoard({ tripId, tab }: { tripId: string; tab: TripSect
       loadItinerary(supabase, tripId),
       loadPlaces(supabase, tripId),
       loadExpenses(supabase, tripId),
-      supabase.from("trip_members").select("user_id, profiles(display_name)").eq("trip_id", tripId),
+      supabase
+        .from("trip_members")
+        .select("user_id, profiles(display_name)")
+        .eq("trip_id", tripId)
+        .order("joined_at"),
       supabase.from("places").select("id, name").eq("trip_id", tripId),
     ]);
   if (!shell.trip) notFound();
 
-  const names = new Map(
-    (members ?? []).map((member) => [member.user_id, member.profiles?.display_name ?? "Someone"]),
-  );
+  const people = (members ?? []).map((member) => ({
+    id: member.user_id,
+    name: member.profiles?.display_name ?? "Someone",
+  }));
+  const names = new Map(people.map((person) => [person.id, person.name]));
+  const placeOptions = placeResult.places
+    .map((place) => ({ id: place.id, name: place.name }))
+    .sort((a, b) => a.name.localeCompare(b.name));
   const placeNameById = new Map((placeNames ?? []).map((place) => [place.id, place.name]));
   const items = itineraryResult.items.map((item) => ({
     ...item,
@@ -63,12 +72,14 @@ export async function TripBoard({ tripId, tab }: { tripId: string; tab: TripSect
             startDate={shell.trip.start_date}
             endDate={shell.trip.end_date}
             items={items}
+            places={placeOptions}
             unavailable={itineraryResult.unavailable}
           />
         }
         places={
           <PlacesSection
             tripId={shell.trip.id}
+            destination={shell.trip.destination}
             places={placeResult.places}
             unavailable={placeResult.placesUnavailable}
             detailsMissing={placeResult.detailsMissing}
@@ -80,6 +91,7 @@ export async function TripBoard({ tripId, tab }: { tripId: string; tab: TripSect
             tripId={shell.trip.id}
             expenses={expenses}
             balances={balances}
+            people={people}
             currentUserId={user.id}
             unavailable={expenseResult.unavailable}
           />

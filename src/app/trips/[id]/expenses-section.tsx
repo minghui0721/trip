@@ -1,8 +1,13 @@
+"use client";
+
+import { useState } from "react";
 import Link from "next/link";
 import { buttonVariants } from "@/components/ui/button";
 import { formatMoney, type SettlementSide } from "@/lib/expense";
 import { formatDate } from "@/lib/format";
 import { cn } from "@/lib/utils";
+import { AddPanel } from "./add-panel";
+import { ExpenseForm } from "./expenses/expense-form";
 import { RemoveExpense } from "./remove-expense";
 
 export type TripExpense = {
@@ -19,23 +24,35 @@ export function ExpensesSection({
   tripId,
   expenses,
   balances,
+  people,
   currentUserId,
   unavailable,
 }: {
   tripId: string;
   expenses: TripExpense[];
   balances: { receive: SettlementSide[]; pay: SettlementSide[] };
+  people: { id: string; name: string }[];
   currentUserId: string;
   unavailable?: "missing" | "failed";
 }) {
+  const [adding, setAdding] = useState(false);
+
+  if (adding) {
+    return (
+      <AddPanel title="Add an expense" onBack={() => setAdding(false)}>
+        <ExpenseForm tripId={tripId} people={people} currentUserId={currentUserId} />
+      </AddPanel>
+    );
+  }
+
   return (
     <section className="flex flex-col gap-3">
       <div className="flex items-center justify-between gap-3">
         <h2 className="text-xl font-extrabold tracking-tight">Expenses</h2>
         {!unavailable && (
-          <Link href={`/trips/${tripId}/expenses/new`} className={cn(buttonVariants(), "h-10 px-4")}>
+          <button type="button" onClick={() => setAdding(true)} className={cn(buttonVariants(), "h-10 px-4")}>
             Add
-          </Link>
+          </button>
         )}
       </div>
 

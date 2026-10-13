@@ -1,3 +1,6 @@
+"use client";
+
+import { useState } from "react";
 import Link from "next/link";
 import { MapPin } from "lucide-react";
 import { buttonVariants } from "@/components/ui/button";
@@ -13,6 +16,8 @@ import {
 } from "@/lib/place";
 import { cn } from "@/lib/utils";
 import { setPlaceStatus } from "../place-actions";
+import { AddPanel } from "./add-panel";
+import { AddPlaceForm } from "./places/new/add-place-form";
 import { PlaceMapStill } from "./place-map-still";
 import { PlacePhotos, type PlacePhoto } from "./place-photos";
 import { RemovePlace } from "./remove-place";
@@ -31,25 +36,37 @@ export type TripPlace = {
 
 export function PlacesSection({
   tripId,
+  destination,
   places,
   unavailable,
   detailsMissing,
   mapMissing,
 }: {
   tripId: string;
+  destination: string | null;
   places: TripPlace[];
   unavailable?: "missing" | "failed";
   detailsMissing?: boolean;
   mapMissing?: boolean;
 }) {
+  const [adding, setAdding] = useState(false);
+
+  if (adding) {
+    return (
+      <AddPanel title="Add a place" onBack={() => setAdding(false)}>
+        <AddPlaceForm tripId={tripId} destination={destination} onDone={() => setAdding(false)} />
+      </AddPanel>
+    );
+  }
+
   return (
     <section className="flex flex-col gap-3">
       <div className="flex items-center justify-between gap-3">
         <h2 className="text-xl font-extrabold tracking-tight">Places</h2>
         {!unavailable && (
-          <Link href={`/trips/${tripId}/places/new`} className={cn(buttonVariants(), "h-10 px-4")}>
+          <button type="button" onClick={() => setAdding(true)} className={cn(buttonVariants(), "h-10 px-4")}>
             Add a place
-          </Link>
+          </button>
         )}
       </div>
       {detailsMissing && (

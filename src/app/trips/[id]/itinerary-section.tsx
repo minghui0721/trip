@@ -1,7 +1,12 @@
+"use client";
+
+import { useState } from "react";
 import Link from "next/link";
 import { buttonVariants } from "@/components/ui/button";
 import { formatItineraryDay, formatTime, itineraryDays, plannedDays } from "@/lib/itinerary";
 import { cn } from "@/lib/utils";
+import { AddPanel } from "./add-panel";
+import { ItineraryForm } from "./itinerary/itinerary-form";
 import { RemoveItineraryItem } from "./remove-itinerary-item";
 
 export type ItineraryItem = {
@@ -19,27 +24,42 @@ export function ItinerarySection({
   startDate,
   endDate,
   items,
+  places,
   unavailable,
 }: {
   tripId: string;
   startDate: string | null;
   endDate: string | null;
   items: ItineraryItem[];
+  places: { id: string; name: string }[];
   unavailable?: "missing" | "failed";
 }) {
+  const [draftDay, setDraftDay] = useState<string | null>(null);
   const days = itineraryDays(
     plannedDays(startDate, endDate),
     items.map((item) => item.day),
   );
+
+  if (draftDay !== null) {
+    return (
+      <AddPanel title="Add to the plan" onBack={() => setDraftDay(null)}>
+        <ItineraryForm key={draftDay} tripId={tripId} places={places} defaultDay={draftDay} />
+      </AddPanel>
+    );
+  }
 
   return (
     <section className="flex flex-col gap-3">
       <div className="flex items-center justify-between gap-3">
         <h2 className="text-xl font-extrabold tracking-tight">Itinerary</h2>
         {!unavailable && (
-          <Link href={`/trips/${tripId}/itinerary/new`} className={cn(buttonVariants(), "h-10 px-4")}>
+          <button
+            type="button"
+            onClick={() => setDraftDay(startDate ?? "")}
+            className={cn(buttonVariants(), "h-10 px-4")}
+          >
             Add
-          </Link>
+          </button>
         )}
       </div>
 
@@ -74,12 +94,13 @@ export function ItinerarySection({
                   <h3 className="text-sm font-bold tracking-widest text-muted-foreground uppercase">
                     {formatItineraryDay(day, startDate)}
                   </h3>
-                  <Link
-                    href={`/trips/${tripId}/itinerary/new?day=${day}`}
+                  <button
+                    type="button"
+                    onClick={() => setDraftDay(day)}
                     className="text-sm font-semibold text-primary hover:underline"
                   >
                     Add
-                  </Link>
+                  </button>
                 </div>
                 {group.length > 0 && (
                   <ul className="flex flex-col gap-3">
