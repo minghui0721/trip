@@ -27,7 +27,11 @@ export function GoogleSignIn({ next }: { next: string }) {
   async function signIn() {
     setLoading(true);
     const supabase = createClient();
-    const redirectTo = `${location.origin}/auth/callback?next=${encodeURIComponent(next)}`;
+    // The return address must match a Supabase Redirect URL exactly. A ?next=
+    // query makes it a different address, so Supabase sends the browser to the
+    // Site URL instead. Remember the page in a cookie and return to the bare callback.
+    document.cookie = `auth-next=${encodeURIComponent(next)}; Path=/; Max-Age=600; SameSite=Lax`;
+    const redirectTo = `${location.origin}/auth/callback`;
     const { error } = await supabase.auth.signInWithOAuth({
       provider: "google",
       options: { redirectTo },

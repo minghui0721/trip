@@ -7,8 +7,24 @@ import { safeNext } from "@/lib/safe-next";
 export async function GET(request: NextRequest) {
   const { searchParams, origin } = request.nextUrl;
   const code = searchParams.get("code");
-  const next = safeNext(searchParams.get("next"));
+  const remembered = request.cookies.get("auth-next")?.value;
+  const next = safeNext(searchParams.get("next") ?? decodeNext(remembered));
 
+  const response = await finish(origin, code, next);
+  response.cookies.set("auth-next", "", { path: "/", maxAge: 0 });
+  return response;
+}
+
+function decodeNext(value: string | undefined) {
+  if (!value) return null;
+  try {
+    return decodeURIComponent(value);
+  } catch {
+    return null;
+  }
+}
+
+async function finish(origin: string, code: string | null, next: string) {
   if (code) {
     const supabase = await createClient();
     const { error } = await supabase.auth.exchangeCodeForSession(code);

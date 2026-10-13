@@ -92,8 +92,6 @@ export function ExchangeRate() {
         </p>
         {quote && (
           <p className="mt-3 text-sm text-muted-foreground">
-            {formatMoney(quote.cents, quote.from)}
-            {" · "}
             1 {quote.from} = {formatRate(quote.rate)} {quote.to}
             {updated ? ` · ${updated}` : ""}
           </p>
@@ -181,10 +179,14 @@ function formatUpdated(value: string | null) {
   if (!value) return null;
   const date = new Date(value);
   if (Number.isNaN(date.getTime())) return null;
-  return new Intl.DateTimeFormat("en-GB", {
+  const formatted = new Intl.DateTimeFormat("en-GB", {
     day: "numeric",
     month: "short",
     year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+    hourCycle: "h23",
     timeZone: "UTC",
   }).format(date);
+  return `${formatted} UTC`;
 }

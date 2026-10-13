@@ -15,7 +15,7 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "Jalan Jalan",
   description: "Plan trips together with your friends.",
-  appleWebApp: { title: "Jalan Jalan", statusBarStyle: "black-translucent" },
+  appleWebApp: { title: "Jalan Jalan", statusBarStyle: "black" },
 };
 
 export const viewport: Viewport = {

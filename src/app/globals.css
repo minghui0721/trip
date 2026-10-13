@@ -138,6 +138,15 @@
   * {
     @apply border-border outline-ring/50;
   }
+  /* Phone browsers give date and time inputs a minimum width that spills
+     out of a half-width column and overlaps the field beside them. */
+  input[type="date"],
+  input[type="time"] {
+    display: block;
+    max-width: 100%;
+    min-width: 0;
+    min-inline-size: 0;
+  }
   html {
     @apply bg-background font-sans;
     height: 100%;
@@ -145,6 +154,22 @@
   body {
     @apply bg-background text-foreground;
     min-height: 100%;
+  }
+}
+
+/* Installed on the iPhone Home Screen, iOS blurs the top of a page that
+   draws under the status bar. A solid strip there makes that bar opaque. */
+@media (display-mode: standalone) {
+  body::before {
+    content: "";
+    position: fixed;
+    z-index: 50;
+    top: 0;
+    right: 0;
+    left: 0;
+    height: max(6px, env(safe-area-inset-top));
+    background: var(--background);
+    pointer-events: none;
   }
 }
 

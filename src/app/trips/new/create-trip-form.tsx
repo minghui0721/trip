@@ -22,14 +22,14 @@ export function CreateTripForm() {
         <Label className="font-bold" htmlFor="destination">Destination (optional)</Label>
         <Input id="destination" name="destination" placeholder="Hanoi" maxLength={100} className="h-12 rounded-md bg-input px-3 text-base" />
       </div>
-      <div className="grid grid-cols-2 gap-3">
-        <div className="flex flex-col gap-2">
+      <div className="grid w-full grid-cols-2 gap-3">
+        <div className="flex min-w-0 flex-col gap-2">
           <Label className="font-bold" htmlFor="start_date">Start date</Label>
-          <Input id="start_date" name="start_date" type="date" className="h-12 rounded-md bg-input px-3 text-base" />
+          <Input id="start_date" name="start_date" type="date" className="h-12 w-full min-w-0 max-w-full rounded-md bg-input px-3 text-base" />
         </div>
-        <div className="flex flex-col gap-2">
+        <div className="flex min-w-0 flex-col gap-2">
           <Label className="font-bold" htmlFor="end_date">End date</Label>
-          <Input id="end_date" name="end_date" type="date" className="h-12 rounded-md bg-input px-3 text-base" />
+          <Input id="end_date" name="end_date" type="date" className="h-12 w-full min-w-0 max-w-full rounded-md bg-input px-3 text-base" />
         </div>
       </div>
       {state.error && (
