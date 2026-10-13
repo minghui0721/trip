@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from "react";
 import { cn } from "@/lib/utils";
 
 export type TripSection = "itinerary" | "places" | "expenses";
@@ -13,27 +12,23 @@ const tabs = [
 
 // The three sections are already on the phone. Switching them does not ask the server.
 export function TripTabs({
-  tripId,
-  initial,
+  tab,
+  onTab,
   itinerary,
   places,
   expenses,
+  peopleOpen,
+  people,
 }: {
-  tripId: string;
-  initial: TripSection;
+  tab: TripSection;
+  onTab: (next: TripSection) => void;
   itinerary: React.ReactNode;
   places: React.ReactNode;
   expenses: React.ReactNode;
+  peopleOpen: boolean;
+  people: React.ReactNode;
 }) {
-  const [tab, setTab] = useState<TripSection>(initial);
-
-  function choose(next: TripSection) {
-    setTab(next);
-    const path = next === "itinerary" ? `/trips/${tripId}` : `/trips/${tripId}/${next}`;
-    window.history.replaceState(null, "", path);
-  }
-
-  const panel = tab === "itinerary" ? itinerary : tab === "places" ? places : expenses;
+  const panel = peopleOpen ? people : tab === "itinerary" ? itinerary : tab === "places" ? places : expenses;
 
   return (
     <>
@@ -43,13 +38,13 @@ export function TripTabs({
       >
         <div className="mx-auto flex w-full max-w-md gap-1 py-2 md:max-w-5xl">
           {tabs.map((item) => {
-            const current = item.id === tab;
+            const current = !peopleOpen && item.id === tab;
             return (
               <button
                 key={item.id}
                 type="button"
                 aria-current={current ? "page" : undefined}
-                onClick={() => choose(item.id)}
+                onClick={() => onTab(item.id)}
                 className={cn(
                   "rounded-full px-4 py-2 text-sm font-semibold transition-colors",
                   current

@@ -3,10 +3,11 @@ import { requireUser } from "@/lib/auth";
 import { formatPayerNames, settlementSides, settleExpenses } from "@/lib/expense";
 import { ExpensesSection, type TripExpense } from "./expenses-section";
 import { ItinerarySection } from "./itinerary-section";
+import { type TripMember } from "./people-panel";
 import { PlacesSection } from "./places-section";
 import { loadExpenses, loadItinerary, loadPlaces, loadTripShell } from "./trip-data";
-import { TripShell } from "./trip-shell";
-import { TripTabs, type TripSection } from "./trip-tabs";
+import { TripScreen } from "./trip-screen";
+import { type TripSection } from "./trip-tabs";
 
 // One load for the whole trip. The tabs then switch on the phone.
 export async function TripBoard({ tripId, tab }: { tripId: string; tab: TripSection }) {
@@ -21,16 +22,18 @@ export async function TripBoard({ tripId, tab }: { tripId: string; tab: TripSect
       loadExpenses(supabase, tripId),
       supabase
         .from("trip_members")
-        .select("user_id, profiles(display_name)")
+        .select("user_id, role, profiles(display_name, avatar_url)")
         .eq("trip_id", tripId)
         .order("joined_at"),
       supabase.from("places").select("id, name").eq("trip_id", tripId),
     ]);
   if (!shell.trip) notFound();
 
-  const people = (members ?? []).map((member) => ({
+  const people: TripMember[] = (members ?? []).map((member) => ({
     id: member.user_id,
     name: member.profiles?.display_name ?? "Someone",
+    avatarUrl: member.profiles?.avatar_url ?? null,
+    role: member.role,
   }));
   const names = new Map(people.map((person) => [person.id, person.name]));
   const placeOptions = placeResult.places
@@ -62,11 +65,11 @@ export async function TripBoard({ tripId, tab }: { tripId: string; tab: TripSect
   );
 
   return (
-    <TripShell trip={shell.trip} memberCount={shell.memberCount} active={tab} showTabs={false}>
-      <TripTabs
-        tripId={shell.trip.id}
-        initial={tab}
-        itinerary={
+    <TripScreen
+      trip={shell.trip}
+      members={people}
+      initial={tab}
+      itinerary={
           <ItinerarySection
             tripId={shell.trip.id}
             startDate={shell.trip.start_date}
@@ -96,7 +99,6 @@ export async function TripBoard({ tripId, tab }: { tripId: string; tab: TripSect
             unavailable={expenseResult.unavailable}
           />
         }
-      />
-    </TripShell>
+    />
   );
 }

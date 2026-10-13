@@ -7,6 +7,7 @@ import { buttonVariants } from "@/components/ui/button";
 import { formatDateRange } from "@/lib/format";
 import { tripColor } from "@/lib/trip-color";
 import { localToday, statusLabel, tripStatus, type TripStatus } from "@/lib/trip-status";
+import { markReturnHome } from "@/lib/return-home";
 import { cn } from "@/lib/utils";
 
 export type HomeTrip = {
@@ -61,6 +62,7 @@ function FeaturedTrip({ trip }: { trip: WithStatus }) {
   return (
     <Link
       href={`/trips/${trip.id}`}
+      onClick={markReturnHome}
       className="group relative block overflow-hidden rounded-2xl p-5 md:p-8 md:pt-12 shadow-xl shadow-black/40 transition-transform active:scale-[0.99]"
       style={{ background: `linear-gradient(135deg, ${color.solid}, ${color.deep})` }}
     >
@@ -98,6 +100,7 @@ function TripGrid({ title, trips, dim }: { title: string; trips: WithStatus[]; d
             <li key={trip.id}>
               <Link
                 href={`/trips/${trip.id}`}
+                onClick={markReturnHome}
                 className="block rounded-lg bg-card p-3 transition-colors hover:bg-secondary"
               >
                 <div
