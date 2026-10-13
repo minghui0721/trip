@@ -138,10 +138,22 @@
   * {
     @apply border-border outline-ring/50;
   }
+  html {
+    @apply bg-background font-sans;
+    height: 100%;
+  }
   body {
     @apply bg-background text-foreground;
+    min-height: 100%;
   }
-  html {
-    @apply font-sans;
+}
+
+/* iOS Safari keeps the address bar outside the page unless the document
+   can scroll. One extra pixel makes the bars float over every page, the
+   same way they do on the home screen. Viewport units (svh/lvh) do the
+   opposite: they pin the page under the search field. */
+@supports (-webkit-touch-callout: none) {
+  body {
+    min-height: calc(100% + 1px);
   }
 }
