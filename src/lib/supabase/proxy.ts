@@ -29,9 +29,8 @@ export async function updateSession(request: NextRequest) {
     },
   );
 
-  // Don't run code between createServerClient and getClaims():
-  // it can cause users to be randomly logged out.
-  await supabase.auth.getClaims();
+  // Refresh the cookie when it is about to expire. The page checks the login itself.
+  await supabase.auth.getSession();
 
   return response;
 }

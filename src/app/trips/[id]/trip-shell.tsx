@@ -16,6 +16,7 @@ export function TripShell({
   trip,
   memberCount,
   active,
+  showTabs = true,
   children,
 }: {
   trip: {
@@ -27,6 +28,7 @@ export function TripShell({
   };
   memberCount: number;
   active: TripTab;
+  showTabs?: boolean;
   children: React.ReactNode;
 }) {
   const color = tripColor(trip.id);
@@ -72,6 +74,7 @@ export function TripShell({
           </p>
         </div>
       </header>
+      {showTabs && (
       <nav
         aria-label="Trip sections"
         className="sticky top-[env(safe-area-inset-top)] z-20 border-b border-white/10 bg-background/90 px-5 backdrop-blur-md md:px-8"
@@ -97,9 +100,14 @@ export function TripShell({
           })}
         </div>
       </nav>
-      <main className="mx-auto flex w-full max-w-md flex-1 flex-col px-5 py-6 pb-12 md:max-w-5xl md:px-8">
-        {children}
-      </main>
+      )}
+      {showTabs ? (
+        <main className="mx-auto flex w-full max-w-md flex-1 flex-col px-5 py-6 pb-12 md:max-w-5xl md:px-8">
+          {children}
+        </main>
+      ) : (
+        children
+      )}
     </div>
   );
 }
