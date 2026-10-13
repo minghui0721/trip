@@ -35,33 +35,11 @@ export function Landing() {
             </p>
           </div>
         </section>
-
-        {/* Below the fold, for anyone who scrolls */}
-        <section className="flex flex-col gap-6 pb-16">
-          <h2 className="text-center text-3xl font-extrabold tracking-tight">How it works</h2>
-          <ol className="grid gap-3 sm:grid-cols-3">
-            <Step n={1} title="Create a trip" body="Give it a name, a destination and dates. Vietnam 2026, done." />
-            <Step n={2} title="Share the invite link" body="Drop it in your group chat. Friends sign in with Google and they're in." />
-            <Step n={3} title="Everyone's in sync" body="No more scrolling back through the chat to find the plan." />
-          </ol>
-        </section>
       </main>
 
       <footer className="relative py-6 pb-[max(1.5rem,env(safe-area-inset-bottom))] text-center text-sm text-muted-foreground">
         Made for trips with friends.
       </footer>
     </div>
-  );
-}
-
-function Step({ n, title, body }: { n: number; title: string; body: string }) {
-  return (
-    <li className="flex gap-4 rounded-xl bg-card p-5 text-left transition-colors hover:bg-secondary sm:flex-col">
-      <span className="text-4xl leading-none font-black text-primary">{n}</span>
-      <div>
-        <p className="font-bold">{title}</p>
-        <p className="mt-1 text-sm text-muted-foreground">{body}</p>
-      </div>
-    </li>
   );
 }
