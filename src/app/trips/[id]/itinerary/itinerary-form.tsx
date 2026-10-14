@@ -13,10 +13,12 @@ export function ItineraryForm({
   places,
   item,
   defaultDay,
+  lockDay = false,
 }: {
   tripId: string;
   places: PlaceOption[];
   defaultDay: string;
+  lockDay?: boolean;
   item?: {
     id: string;
     day: string;
@@ -28,6 +30,7 @@ export function ItineraryForm({
 }) {
   const action = item ? updateItineraryItem : createItineraryItem;
   const [state, formAction, pending] = useActionState<ItineraryFormState, FormData>(action, {});
+  const day = item?.day || defaultDay;
   const [title, setTitle] = useState(item?.title ?? "");
   const [placeId, setPlaceId] = useState(item?.placeId ?? "");
 
@@ -42,18 +45,22 @@ export function ItineraryForm({
     <form action={formAction} className="flex flex-col gap-5">
       <input type="hidden" name="trip_id" value={tripId} />
       {item && <input type="hidden" name="item_id" value={item.id} />}
-      <div className="grid grid-cols-2 gap-3">
-        <div className="flex flex-col gap-2">
-          <Label className="font-bold" htmlFor="day">Date</Label>
-          <Input
-            id="day"
-            name="day"
-            type="date"
-            required
-            defaultValue={item?.day || defaultDay}
-            className="h-12 rounded-md bg-input px-3 text-base"
-          />
-        </div>
+      <div className={lockDay ? "flex flex-col gap-2" : "grid grid-cols-2 gap-3"}>
+        {lockDay ? (
+          <input type="hidden" name="day" value={day} />
+        ) : (
+          <div className="flex flex-col gap-2">
+            <Label className="font-bold" htmlFor="day">Date</Label>
+            <Input
+              id="day"
+              name="day"
+              type="date"
+              required
+              defaultValue={day}
+              className="h-12 rounded-md bg-input px-3 text-base"
+            />
+          </div>
+        )}
         <div className="flex flex-col gap-2">
           <Label className="font-bold" htmlFor="starts_at">Time (optional)</Label>
           <Input

@@ -34,16 +34,25 @@ export function ItinerarySection({
   places: { id: string; name: string }[];
   unavailable?: "missing" | "failed";
 }) {
-  const [draftDay, setDraftDay] = useState<string | null>(null);
+  const [draft, setDraft] = useState<{ day: string; locked: boolean } | null>(null);
   const days = itineraryDays(
     plannedDays(startDate, endDate),
     items.map((item) => item.day),
   );
 
-  if (draftDay !== null) {
+  if (draft) {
     return (
-      <AddPanel title="Add to the plan" onBack={() => setDraftDay(null)}>
-        <ItineraryForm key={draftDay} tripId={tripId} places={places} defaultDay={draftDay} />
+      <AddPanel
+        title={draft.locked ? formatItineraryDay(draft.day, startDate) : "Add to the plan"}
+        onBack={() => setDraft(null)}
+      >
+        <ItineraryForm
+          key={draft.day}
+          tripId={tripId}
+          places={places}
+          defaultDay={draft.day}
+          lockDay={draft.locked}
+        />
       </AddPanel>
     );
   }
@@ -52,10 +61,10 @@ export function ItinerarySection({
     <section className="flex flex-col gap-3">
       <div className="flex items-center justify-between gap-3">
         <h2 className="text-xl font-extrabold tracking-tight">Itinerary</h2>
-        {!unavailable && (
+        {!unavailable && days.length === 0 && (
           <button
             type="button"
-            onClick={() => setDraftDay(startDate ?? "")}
+            onClick={() => setDraft({ day: startDate ?? "", locked: false })}
             className={cn(buttonVariants(), "h-10 px-4")}
           >
             Add
@@ -96,7 +105,7 @@ export function ItinerarySection({
                   </h3>
                   <button
                     type="button"
-                    onClick={() => setDraftDay(day)}
+                    onClick={() => setDraft({ day, locked: true })}
                     className="text-sm font-semibold text-primary hover:underline"
                   >
                     Add

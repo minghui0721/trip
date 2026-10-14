@@ -68,6 +68,7 @@ export async function TripBoard({ tripId, tab }: { tripId: string; tab: TripSect
     <TripScreen
       trip={shell.trip}
       members={people}
+      canEdit={people.some((person) => person.id === user.id && person.role === "owner")}
       initial={tab}
       itinerary={
           <ItinerarySection

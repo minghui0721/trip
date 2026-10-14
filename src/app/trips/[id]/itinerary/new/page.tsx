@@ -2,7 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ChevronLeft } from "lucide-react";
 import { requireUser } from "@/lib/auth";
-import { isIsoDate } from "@/lib/itinerary";
+import { formatItineraryDay, isIsoDate } from "@/lib/itinerary";
 import { ItineraryForm } from "../itinerary-form";
 
 export default async function NewItineraryPage({
@@ -27,7 +27,8 @@ export default async function NewItineraryPage({
     .order("name");
 
   const requested = typeof day === "string" ? day : "";
-  const defaultDay = isIsoDate(requested) ? requested : (trip.start_date ?? "");
+  const locked = isIsoDate(requested);
+  const defaultDay = locked ? requested : (trip.start_date ?? "");
 
   return (
     <div className="flex flex-1 flex-col bg-gradient-to-b from-secondary to-background to-40%">
@@ -41,12 +42,15 @@ export default async function NewItineraryPage({
         </Link>
         <div>
           <p className="text-sm font-medium text-muted-foreground">{trip.name}</p>
-          <h1 className="mt-1 text-4xl font-black tracking-tighter md:text-5xl">Add to the plan</h1>
+          <h1 className="mt-1 text-4xl font-black tracking-tighter md:text-5xl">
+            {locked ? formatItineraryDay(defaultDay, trip.start_date) : "Add to the plan"}
+          </h1>
         </div>
         <ItineraryForm
           tripId={trip.id}
           places={places ?? []}
           defaultDay={defaultDay}
+          lockDay={locked}
         />
       </main>
     </div>

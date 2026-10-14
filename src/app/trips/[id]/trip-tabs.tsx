@@ -19,6 +19,8 @@ export function TripTabs({
   expenses,
   peopleOpen,
   people,
+  editing,
+  editor,
 }: {
   tab: TripSection;
   onTab: (next: TripSection) => void;
@@ -27,8 +29,10 @@ export function TripTabs({
   expenses: React.ReactNode;
   peopleOpen: boolean;
   people: React.ReactNode;
+  editing: boolean;
+  editor: React.ReactNode;
 }) {
-  const panel = peopleOpen ? people : tab === "itinerary" ? itinerary : tab === "places" ? places : expenses;
+  const panel = editing ? editor : peopleOpen ? people : tab === "itinerary" ? itinerary : tab === "places" ? places : expenses;
 
   return (
     <>
@@ -38,7 +42,7 @@ export function TripTabs({
       >
         <div className="mx-auto flex w-full max-w-md gap-1 py-2 md:max-w-5xl">
           {tabs.map((item) => {
-            const current = !peopleOpen && item.id === tab;
+            const current = !peopleOpen && !editing && item.id === tab;
             return (
               <button
                 key={item.id}
